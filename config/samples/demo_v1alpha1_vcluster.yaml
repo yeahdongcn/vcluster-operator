@@ -1,0 +1,258 @@
+apiVersion: demo.example.com/v1alpha1
+kind: VCluster
+metadata:
+  name: vcluster-sample
+spec:
+  # Default values copied from <project_dir>/helm-charts/vcluster/values.yaml
+  affinity: {}
+  annotations: {}
+  coredns:
+    enabled: true
+    integrated: false
+    plugin:
+      config: []
+      enabled: false
+    podAnnotations: {}
+    podLabels: {}
+    replicas: 1
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 170Mi
+      requests:
+        cpu: 3m
+        memory: 16Mi
+    service:
+      annotations: {}
+      externalIPs: []
+      externalTrafficPolicy: ""
+      type: ClusterIP
+  defaultImageRegistry: ""
+  enableHA: false
+  fallbackHostDns: false
+  globalAnnotations: {}
+  headless: false
+  ingress:
+    annotations:
+      nginx.ingress.kubernetes.io/backend-protocol: HTTPS
+      nginx.ingress.kubernetes.io/ssl-passthrough: "true"
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    apiVersion: networking.k8s.io/v1
+    enabled: false
+    host: vcluster.local
+    ingressClassName: ""
+    pathType: ImplementationSpecific
+    tls: []
+  init:
+    helm: []
+    manifests: '---'
+    manifestsTemplate: ""
+  isolation:
+    enabled: false
+    limitRange:
+      default:
+        cpu: "1"
+        ephemeral-storage: 8Gi
+        memory: 512Mi
+      defaultRequest:
+        cpu: 100m
+        ephemeral-storage: 3Gi
+        memory: 128Mi
+      enabled: true
+    namespace: null
+    networkPolicy:
+      enabled: true
+      outgoingConnections:
+        ipBlock:
+          cidr: 0.0.0.0/0
+          except:
+          - 100.64.0.0/10
+          - 127.0.0.0/8
+          - 10.0.0.0/8
+          - 172.16.0.0/12
+          - 192.168.0.0/16
+    nodeProxyPermission:
+      enabled: false
+    podSecurityStandard: baseline
+    resourceQuota:
+      enabled: true
+      quota:
+        count/configmaps: 100
+        count/endpoints: 40
+        count/persistentvolumeclaims: 20
+        count/pods: 20
+        count/secrets: 100
+        count/services: 20
+        limits.cpu: 20
+        limits.ephemeral-storage: 160Gi
+        limits.memory: 40Gi
+        requests.cpu: 10
+        requests.ephemeral-storage: 60Gi
+        requests.memory: 20Gi
+        requests.storage: 100Gi
+        services.loadbalancers: 1
+        services.nodeports: 0
+      scopeSelector:
+        matchExpressions: null
+      scopes: null
+  labels: {}
+  mapServices:
+    fromHost: []
+    fromVirtual: []
+  multiNamespaceMode:
+    enabled: false
+  nodeSelector: {}
+  noopSyncer:
+    enabled: false
+    synck8sService: false
+  openshift:
+    enable: false
+  plugin: {}
+  podAnnotations: {}
+  podDisruptionBudget:
+    enabled: false
+    minAvailable: 1
+  podLabels: {}
+  podSecurityContext: {}
+  priorityClassName: ""
+  pro: false
+  proxy:
+    metricsServer:
+      nodes:
+        enabled: false
+      pods:
+        enabled: false
+  rbac:
+    clusterRole:
+      create: false
+    role:
+      create: true
+      excludedApiResources: null
+      extended: false
+  replicas: 1
+  securityContext:
+    allowPrivilegeEscalation: false
+    runAsGroup: 0
+    runAsUser: 0
+  serverToken:
+    secretKeyRef: {}
+    value: ""
+  service:
+    externalIPs: []
+    externalTrafficPolicy: ""
+    loadBalancerClass: ""
+    loadBalancerIP: ""
+    loadBalancerSourceRanges: []
+    type: ClusterIP
+  serviceAccount:
+    create: true
+  storage:
+    persistence: true
+    size: 5Gi
+  sync:
+    configmaps:
+      all: false
+      enabled: true
+    endpoints:
+      enabled: true
+    events:
+      enabled: true
+    fake-nodes:
+      enabled: true
+    fake-persistentvolumes:
+      enabled: true
+    generic:
+      config: '---'
+    hoststorageclasses:
+      enabled: false
+    ingressclasses: {}
+    ingresses:
+      enabled: false
+    networkpolicies:
+      enabled: false
+    nodes:
+      enableScheduler: false
+      enabled: false
+      fakeKubeletIPs: true
+      nodeSelector: ""
+      syncAllNodes: false
+      syncNodeChanges: false
+    persistentvolumeclaims:
+      enabled: true
+    persistentvolumes:
+      enabled: false
+    poddisruptionbudgets:
+      enabled: false
+    pods:
+      enabled: true
+      ephemeralContainers: false
+      status: false
+    priorityclasses:
+      enabled: false
+    secrets:
+      all: false
+      enabled: true
+    serviceaccounts:
+      enabled: false
+    services:
+      enabled: true
+    storageclasses:
+      enabled: false
+    volumesnapshots:
+      enabled: false
+  syncer:
+    env: []
+    extraArgs: []
+    extraVolumeMounts: []
+    kubeConfigContextName: my-vcluster
+    livenessProbe:
+      enabled: true
+    readinessProbe:
+      enabled: true
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 512Mi
+      requests:
+        cpu: 20m
+        memory: 64Mi
+    serviceAnnotations: {}
+    volumeMounts:
+    - mountPath: /data
+      name: data
+  telemetry:
+    disabled: false
+    instanceCreator: helm
+    instanceCreatorUID: ""
+  tolerations: []
+  vcluster:
+    baseArgs:
+    - server
+    - --write-kubeconfig=/data/k3s-config/kube-config.yaml
+    - --data-dir=/data
+    - --disable=traefik,servicelb,metrics-server,local-storage,coredns
+    - --disable-network-policy
+    - --disable-agent
+    - --disable-cloud-controller
+    - --flannel-backend=none
+    - --kube-apiserver-arg=bind-address=127.0.0.1
+    command:
+    - /bin/k3s
+    env: []
+    extraArgs: []
+    extraVolumeMounts: []
+    image: rancher/k3s:v1.28.2-k3s1
+    resources:
+      limits:
+        memory: 2Gi
+      requests:
+        cpu: 200m
+        memory: 256Mi
+    volumeMounts:
+    - mountPath: /data
+      name: data
+  volumes: []
+  workloadServiceAccount:
+    annotations: {}
+  
+  
