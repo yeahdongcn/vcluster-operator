@@ -2,6 +2,7 @@ apiVersion: demo.example.com/v1alpha1
 kind: VCluster
 metadata:
   name: vcluster-sample
+  namespace: sample
 spec:
   # Default values copied from <project_dir>/helm-charts/vcluster/values.yaml
   affinity: {}
@@ -254,5 +255,5 @@ spec:
   volumes: []
   workloadServiceAccount:
     annotations: {}
-  
-  
+
+
