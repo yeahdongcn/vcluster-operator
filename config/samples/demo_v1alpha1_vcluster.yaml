@@ -49,7 +49,7 @@ spec:
     manifests: '---'
     manifestsTemplate: ""
   isolation:
-    enabled: false
+    enabled: true
     limitRange:
       default:
         cpu: "1"
@@ -81,7 +81,7 @@ spec:
         count/configmaps: 100
         count/endpoints: 40
         count/persistentvolumeclaims: 20
-        count/pods: 20
+        count/pods: 3
         count/secrets: 100
         count/services: 20
         limits.cpu: 20
