@@ -104,6 +104,39 @@ docker-buildx: test ## Build and push docker image for the manager for cross-pla
 	- docker buildx rm project-v3-builder
 	rm Dockerfile.cross
 
+##@ Kind
+
+.PHONY: kind-create
+kind-create: ## Create a kind cluster.
+	kind create cluster --name=vcluster --config=kind.yaml
+
+.PHONY: kind-delete
+kind-delete: ## Delete a kind cluster
+	kind delete cluster --name=vcluster
+
+DOCKER_IMAGES := rancher/k3s:v1.28.2-k3s1 ghcr.io/loft-sh/vcluster:0.16.4 coredns/coredns:1.11.0 \
+	registry.k8s.io/ingress-nginx/controller:v1.9.4@sha256:5b161f051d017e55d358435f295f5e9a297e66158f136321d9b04520ec6c48a3 \
+	registry.k8s.io/ingress-nginx/kube-webhook-certgen:v20231011-8b53cabe0@sha256:a7943503b45d552785aa3b5e457f169a5661fb94d82b8a3373bcd9ebaf9aac80
+
+.PHONY: kind-load
+kind-load: ## Pull and load images to a kind cluster
+	@for v in $(DOCKER_IMAGES) ; do \
+		docker pull $$v ; \
+		v=$$(echo $$v | sed 's/@sha256.*//') ; \
+		kind load docker-image $$v --name vcluster ; \
+	done
+
+.PHONY: ingress
+ingress: ## Install ingress-nginx.
+	kubectl apply -f ingress-nginx-kind.yaml
+
+.PHONY: kind-all
+kind-all: kind-create kind-load ingress install
+
+.PHONY: secret
+secret: # https://github.com/n8sOrganization/vCluster-Ingress/blob/main/README.md
+	kubectl get secret vc-sample -n sample --template={{.data.config}} | base64 -d > kc
+
 ##@ Deployment
 
 .PHONY: install

@@ -1,7 +1,7 @@
 apiVersion: demo.example.com/v1alpha1
 kind: VCluster
 metadata:
-  name: vcluster-sample
+  name: sample
   namespace: sample
 spec:
   # Default values copied from <project_dir>/helm-charts/vcluster/values.yaml
@@ -39,9 +39,9 @@ spec:
       nginx.ingress.kubernetes.io/ssl-passthrough: "true"
       nginx.ingress.kubernetes.io/ssl-redirect: "true"
     apiVersion: networking.k8s.io/v1
-    enabled: false
-    host: vcluster.local
-    ingressClassName: ""
+    enabled: true
+    host: sample.vcluster.local
+    ingressClassName: "nginx"
     pathType: ImplementationSpecific
     tls: []
   init:
@@ -204,7 +204,10 @@ spec:
       enabled: false
   syncer:
     env: []
-    extraArgs: []
+    extraArgs: [
+      --tls-san=sample.vcluster.local,
+      --out-kube-config-server=sample.vcluster.local
+    ]
     extraVolumeMounts: []
     kubeConfigContextName: my-vcluster
     livenessProbe:
