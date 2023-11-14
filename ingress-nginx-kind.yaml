@@ -422,6 +422,7 @@ spec:
       containers:
       - args:
         - /nginx-ingress-controller
+        - --enable-ssl-passthrough
         - --election-id=ingress-nginx-leader
         - --controller-class=k8s.io/ingress-nginx
         - --ingress-class=nginx
