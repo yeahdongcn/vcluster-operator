@@ -206,7 +206,7 @@ spec:
     env: []
     extraArgs: [
       --tls-san=sample.vcluster.local,
-      --out-kube-config-server=sample.vcluster.local
+      --out-kube-config-server=https://sample.vcluster.local
     ]
     extraVolumeMounts: []
     kubeConfigContextName: my-vcluster
